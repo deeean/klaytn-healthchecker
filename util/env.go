@@ -5,12 +5,20 @@ import (
 	"strconv"
 )
 
-func GetString(key string) string {
-	return os.Getenv(key)
+func GetEnvOrDefault(key string, defaultValue string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		return defaultValue
+	}
+
+	return value
 }
 
-func GetInt(key string) (int64, error) {
-	v := GetString(key)
+func GetEnvInt64OrDefault(key string, defaultValue int64) (int64, error) {
+	v := os.Getenv(key)
+	if v == "" {
+		return defaultValue, nil
+	}
 	i, err := strconv.ParseInt(v, 10, 0)
 	if err != nil {
 		return 0, err
