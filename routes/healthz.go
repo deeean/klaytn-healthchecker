@@ -1,15 +1,15 @@
-package handler
+package routes
 
 import (
-	"github.com/deeean/klaytn-healthchecker/rpc"
-	"github.com/deeean/klaytn-healthchecker/util"
+	"github.com/deeean/klaytn-healthchecker/api"
+	"github.com/deeean/klaytn-healthchecker/utils"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
 func Healthz(rpcUrl string, maxBlockDifference int64) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		syncing, err := rpc.GetSyncing(rpcUrl)
+		syncing, err := api.GetSyncing(rpcUrl)
 		if err != nil {
 			c.Logger().Error(err)
 			return c.String(http.StatusServiceUnavailable, "unhealthy")
@@ -19,12 +19,12 @@ func Healthz(rpcUrl string, maxBlockDifference int64) echo.HandlerFunc {
 			return c.String(http.StatusOK, "healthy")
 		}
 
-		currentBlock, err := util.HexToInt64(syncing.Result["currentBlock"])
+		currentBlock, err := utils.HexToInt64(syncing.Result["currentBlock"])
 		if err != nil {
 			return c.String(http.StatusServiceUnavailable, "unhealthy")
 		}
 
-		highestBlock, err := util.HexToInt64(syncing.Result["highestBlock"])
+		highestBlock, err := utils.HexToInt64(syncing.Result["highestBlock"])
 		if err != nil {
 			return c.String(http.StatusServiceUnavailable, "unhealthy")
 		}
